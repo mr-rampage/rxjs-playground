@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run lint && karma start",
     "clean": "rm -rf dist && mkdir -p dist/js",
-    "browserify": "browserify ./src/js/core.js > ./dist/js/impress.js",
+    "browserify": "browserify ./src/js/**/*.js -i ./src/js/**/*.spec.js > ./dist/js/app.js",
     "build:js": "npm run browserify",
     "build:css": "cp -R ./src/css ./dist/",
     "build:html": "cp ./src/*.html ./dist/",
