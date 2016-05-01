@@ -2,6 +2,7 @@
  import diff from "virtual-dom/diff";
  import patch from "virtual-dom/patch";
  import createElement from "virtual-dom/create-element";
+ import Rx from "rx/dist/rx.all";
 
  /**
   * Renders the count
@@ -12,25 +13,32 @@
    return h('div', {
      style: {
        textAlign: 'center',
-       lineHeight: (100 + count) + 'px',
-       border: '1px solid red',
-       width: (100 + count) + 'px',
-       height: (100 + count) + 'px'
+       border: '1px solid red'
      }
    }, [String(count)]);
  }
 
- var count = 0;
+ var counter = {
+   count: 0
+ };
 
- var tree = render(count);
+ var tree = render(counter.count);
  var rootNode = createElement(tree);
  document.body.appendChild(rootNode);
 
- setInterval(() => {
-   count++;
+ var secondStream = Rx.Observable.interval(1000);
+ secondStream.subscribe(() => {
+   counter.count++;
+ });
 
-   var newTree = render(count);
+ var counterStream = Rx.Observable.ofObjectChanges(counter);
+
+ var renderer = Rx.Observer.create(e => {
+   var newTree = render(e.object.count);
    var patches = diff(tree, newTree);
    rootNode = patch(rootNode, patches);
    tree = newTree;
- }, 1000);
+ });
+
+ counterStream.subscribe(renderer);
+
