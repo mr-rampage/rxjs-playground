@@ -10,18 +10,18 @@
      this.rootNode = null;
    }
 
-   render(value) {
+   render() {
      return h();
    }
 
-   build(value) {
-     this.tree = this.render(value);
+   build() {
+     this.tree = this.render();
      this.rootNode = createElement(this.tree);
      document.body.appendChild(this.rootNode);
    }
 
    update(e) {
-     var newTree = this.render(e.object);
+     var newTree = this.render();
      var patches = diff(this.tree, newTree);
      this.rootNode = patch(this.rootNode, patches);
      this.tree = newTree;
