@@ -4,9 +4,10 @@
  import createElement from "virtual-dom/create-element";
  import Rx from "rx/dist/rx";
 
- function componentObserverFactory(render) {
+ function componentObserverFactory(renderMethod) {
    let tree = null;
    let rootNode = null;
+   let render = renderMethod || function() { return h(); };
 
    function onNext(e) {
      let newTree = render();
