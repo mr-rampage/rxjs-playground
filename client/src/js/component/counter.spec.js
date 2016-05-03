@@ -2,6 +2,7 @@ import {default as counterFactory} from "./counter";
 
 describe('CounterComponent', () => {
   let component;
+
   beforeEach(() => {
     component = counterFactory(5); 
   });

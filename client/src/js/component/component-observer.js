@@ -1,34 +1,34 @@
- import h from "virtual-dom/h";
- import diff from "virtual-dom/diff";
- import patch from "virtual-dom/patch";
- import createElement from "virtual-dom/create-element";
- import Rx from "rx/dist/rx";
+import h from "virtual-dom/h";
+import diff from "virtual-dom/diff";
+import patch from "virtual-dom/patch";
+import createElement from "virtual-dom/create-element";
+import Rx from "rx/dist/rx";
 
- function componentObserverFactory(renderMethod) {
-   let tree = null;
-   let rootNode = null;
-   let render = renderMethod || function() { return h(); };
+function componentObserverFactory(renderMethod) {
+  let tree = null;
+  let rootNode = null;
+  let render = renderMethod || function() { return h(); };
 
-   function onNext(e) {
-     let newTree = render();
-     let patches = diff(tree, newTree);
-     rootNode = patch(rootNode, patches);
-     tree = newTree;
-   }
+  function onNext(e) {
+    let newTree = render();
+    let patches = diff(tree, newTree);
+    rootNode = patch(rootNode, patches);
+    tree = newTree;
+  }
 
-   function onError(e) {
-     console.log(e);
-   }
+  function onError(e) {
+    console.log(e);
+  }
 
-   function onComplete() {
-     console.log('done');
-   }
+  function onComplete() {
+    console.log('done');
+  }
 
-   tree = render();
-   rootNode = createElement(tree);
-   document.body.appendChild(rootNode);
+  tree = render();
+  rootNode = createElement(tree);
+  document.body.appendChild(rootNode);
 
-   return Rx.Observer.create(onNext, onError, onComplete);
- }
+  return Rx.Observer.create(onNext, onError, onComplete);
+}
 
- export default componentObserverFactory;
+export default componentObserverFactory;
