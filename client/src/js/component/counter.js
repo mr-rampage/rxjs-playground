@@ -1,39 +1,35 @@
  import h from "virtual-dom/h";
  import Rx from "rx/dist/rx.all";
- import {default as VirtualDomComponent} from "./virtual-dom-component"
+ import {default as componentObserverFactory} from "./component-observer"
 
- let _counter = {count: 0};
+ function counterFactory(count) {
+    let counter = {
+      count: count || 0
+    };
+    counter.increment = () => counter.count++;
+    return counter;
+ }
 
- class CounterComponent extends VirtualDomComponent {
-
-   constructor() {
-     super();
-     this.increment = () => {
-       _counter.count++;
-     };
-   }
-
-   withCounter(counter) {
-     _counter = counter;
-     return this;
-   }
-
-   render() {
-     return h('div', {
+ function counterRenderFactory(counter) {
+   return {
+     render: () => h('div', {
        style: {
          textAlign: 'center',
          border: '1px solid red'
        }
-     }, [String(_counter.count)]);
-   }
-
-   build() {
-     super.build();
-     Rx.Observable.ofObjectChanges(_counter)
-       .subscribe(super.update.bind(this));
-     return this;
-   }
+     }, [String(counter.count)])
+   };
  }
 
- export default CounterComponent;
+ function counterComponentFactory(count) {
+   let model = counterFactory(count);
+   let view = counterRenderFactory(model);
+   let component = Object.assign(model, view);
 
+   let observer = componentObserverFactory(component.render);
+   Rx.Observable.ofObjectChanges(component).subscribe(observer);
+
+   return component;
+ };
+
+ export default counterComponentFactory;
