@@ -1,21 +1,22 @@
 import h from "virtual-dom/h";
 import Rx from "rx/dist/rx.all";
-import {default as componentObserverFactory} from "./component-observer"
+import {default as VDomObserver} from "./virtual-dom-observer"
 
-function counterFactory(count) {
+function Counter(count) {
+  let _count = count || 0;
+  let _stream = new Rx.Subject();
   let counter = {
-    count: count || 0,
-    subject: new Rx.Subject()
+    get stream() { return _stream; },
+    get count() { return _count; },
+    increment: () => {
+      _stream.onNext(++_count);
+      return _count;
+    }
   };
-  counter.increment = () => {
-    counter.count++;
-    counter.subject.onNext(counter.count);
-  };
-
   return counter;
 }
 
-function counterRenderFactory(counter) {
+function CounterView(counter) {
   return {
     render: () => h('div', {
       style: {
@@ -26,15 +27,14 @@ function counterRenderFactory(counter) {
   };
 }
 
-function counterComponentFactory(count) {
-  let model = counterFactory(count);
-  let view = counterRenderFactory(model);
-  let component = Object.assign(model, view);
+function CounterComponent(count) {
+  let counter = Counter(count);
+  let view = CounterView(counter);
+  let component = Object.assign(counter, view);
 
-  let observer = componentObserverFactory(component.render);
-  model.subject.subscribe(observer);
-
+  let observer = VDomObserver(component.render);
+  counter.stream.subscribe(observer);
   return component;
 };
 
-export default counterComponentFactory;
+export default CounterComponent;

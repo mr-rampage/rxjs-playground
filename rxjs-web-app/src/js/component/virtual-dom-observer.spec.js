@@ -1,7 +1,7 @@
 import h from "virtual-dom/h";
-import {default as componentObserver} from "./component-observer";
+import {default as VDomObserver} from "./virtual-dom-observer";
 
-describe('ComponentObserverFactory', () => {
+describe('VDomObserver', () => {
   let fake, observer;
 
   beforeEach(() => {
@@ -10,7 +10,7 @@ describe('ComponentObserverFactory', () => {
     };
 
     spyOn(fake, 'render').and.returnValue(h());
-    observer = componentObserver(fake.render);
+    observer = VDomObserver(fake.render);
   });
 
   it('should call render on initialization', () => {
