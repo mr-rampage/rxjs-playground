@@ -6,6 +6,7 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['browserify', 'jasmine'],
     files: [
+      'node_modules/babel-polyfill/dist/polyfill.js',
       'src/**/*.spec.js'
     ],
     exclude: [],
