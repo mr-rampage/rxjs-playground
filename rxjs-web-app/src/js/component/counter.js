@@ -3,14 +3,13 @@ import Rx from "rx/dist/rx.all";
 import {default as VDomObserver} from "./virtual-dom-observer"
 
 function Counter(count) {
-  let _count = count || 0;
-  let _stream = new Rx.Subject();
+  let _stream = new Rx.BehaviorSubject(count || 0);
   let counter = {
     get stream() { return _stream; },
-    get count() { return _count; },
+    get count() { return _stream.getValue(); },
     increment: () => {
-      _stream.onNext(++_count);
-      return _count;
+      _stream.onNext(_stream.getValue() + 1);
+      return _stream.getValue();
     }
   };
   return counter;
